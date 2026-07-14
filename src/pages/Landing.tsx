@@ -37,9 +37,9 @@ const HOW_IT_WORKS = [
 ];
 
 // Animasi variants yang reusable
-const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } } };
-const stagger = { show: { transition: { staggerChildren: 0.09 } } };
-const scaleIn = { hidden: { opacity: 0, scale: 0.88 }, show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: 'easeOut' } } };
+const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } } };
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.09 } } };
+const scaleIn = { hidden: { opacity: 0, scale: 0.88 }, show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: 'easeOut' as const } } };
 
 export default function Landing({ user, onLogout }: LandingProps) {
   const navigate = useNavigate();
@@ -140,7 +140,7 @@ export default function Landing({ user, onLogout }: LandingProps) {
             {/* ── Kiri: Konten teks ── */}
             <div className="flex flex-col gap-6 pb-16 lg:pb-20">
               {/* Pill badge */}
-              <motion.div {...fadeUp} transition={{ delay: 0 }}
+              <motion.div variants={fadeUp} initial="hidden" animate="show" transition={{ delay: 0 }}
                 className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-indigo-100 px-4 py-2 rounded-full w-fit shadow-sm">
                 <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
                   <Shield className="w-3 h-3 text-white" />

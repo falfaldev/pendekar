@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
-import { ShieldCheck, LogIn, ShieldAlert } from 'lucide-react';
+import { LogIn, ShieldAlert } from 'lucide-react';
 
 interface LoginProps {
   onLoginSuccess: () => void;

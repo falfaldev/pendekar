@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
-import { ShieldCheck, UserPlus, ShieldAlert, ArrowLeft } from 'lucide-react';
+import { UserPlus, ShieldAlert, ArrowLeft } from 'lucide-react';
 
 interface RegisterProps {
   onLoginSuccess: () => void;
