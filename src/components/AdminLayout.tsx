@@ -40,7 +40,7 @@ export default function AdminLayout({ user, onLogout, children }: AdminLayoutPro
           <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-full h-full object-contain drop-shadow-sm" />
         </div>
         <div>
-          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAREMAJA</h1>
+          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAR</h1>
           <p className="text-red-100 text-[10px] tracking-[0.22em] uppercase font-bold mt-1">
             Panel Administrasi
           </p>

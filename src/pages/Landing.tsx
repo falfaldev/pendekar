@@ -66,7 +66,7 @@ export default function Landing({ user, onLogout }: LandingProps) {
               <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-12 h-12 object-contain drop-shadow-md" />
             </motion.div>
             <div>
-              <span className="font-extrabold text-[17px] text-primary tracking-tight leading-none block">PENDEKAREMAJA</span>
+              <span className="font-extrabold text-[17px] text-primary tracking-tight leading-none block">PENDEKAR</span>
               <span className="text-[10px] text-slate-500 font-semibold leading-none block mt-0.5">Pelayanan Edukasi dan Kesehatan Reproduksi Remaja</span>
             </div>
           </Link>
@@ -172,7 +172,7 @@ export default function Landing({ user, onLogout }: LandingProps) {
               <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
                 className="text-slate-600 text-base sm:text-lg max-w-lg leading-relaxed">
-                PENDEKAREMAJA adalah platform edukasi interaktif untuk membantu remaja memahami HIV/AIDS dengan cara yang mudah, terpercaya, dan menyenangkan.
+                PENDEKAR adalah platform edukasi interaktif untuk membantu remaja memahami HIV/AIDS dengan cara yang mudah, terpercaya, dan menyenangkan.
               </motion.p>
 
               {/* Checkmarks cepat */}
@@ -312,7 +312,7 @@ export default function Landing({ user, onLogout }: LandingProps) {
             className="text-center mb-14"
           >
             <span className="text-primary font-bold text-sm uppercase tracking-widest">Platform Edukasi</span>
-            <h2 className="font-extrabold text-3xl sm:text-4xl text-slate-900 mt-2">Kenapa Belajar di PENDEKAREMAJA?</h2>
+            <h2 className="font-extrabold text-3xl sm:text-4xl text-slate-900 mt-2">Kenapa Belajar di PENDEKAR?</h2>
             <div className="w-14 h-1.5 bg-primary rounded-full mx-auto mt-4" />
           </motion.div>
 
@@ -412,7 +412,7 @@ export default function Landing({ user, onLogout }: LandingProps) {
             viewport={{ once: true }} transition={{ delay: 0.2 }}
             className="text-indigo-100 text-base leading-relaxed max-w-xl mx-auto"
           >
-            Bergabunglah dengan PENDEKAREMAJA. Belajar HIV/AIDS dengan cara yang menyenangkan, aman, dan terpercaya — gratis selamanya.
+            Bergabunglah dengan PENDEKAR. Belajar HIV/AIDS dengan cara yang menyenangkan, aman, dan terpercaya — gratis selamanya.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
@@ -448,11 +448,11 @@ export default function Landing({ user, onLogout }: LandingProps) {
               <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-9 h-9 object-contain" />
             </div>
             <div>
-              <span className="font-extrabold text-sm text-white">PENDEKAREMAJA</span>
+              <span className="font-extrabold text-sm text-white">PENDEKAR</span>
               <span className="text-slate-400 text-[10px] font-medium ml-2">Pelayanan Edukasi dan Kesehatan Reproduksi Remaja</span>
             </div>
           </div>
-          <p className="text-slate-500 text-xs">© {new Date().getFullYear()} PENDEKAREMAJA. Platform edukasi HIV/AIDS untuk remaja Indonesia.</p>
+          <p className="text-slate-500 text-xs">© {new Date().getFullYear()} PENDEKAR. Platform edukasi HIV/AIDS untuk remaja Indonesia.</p>
           <div className="flex items-center gap-1 text-slate-400 text-xs">
             <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
             <span>Dibuat dengan cinta untuk remaja Indonesia</span>
@@ -489,7 +489,7 @@ export default function Landing({ user, onLogout }: LandingProps) {
                 <iframe
                   className="absolute inset-0 w-full h-full"
                   src="https://www.youtube.com/embed/2gfsHCoylFg?autoplay=1&rel=0"
-                  title="Video Trailer PENDEKAREMAJA"
+                  title="Video Trailer PENDEKAR"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />

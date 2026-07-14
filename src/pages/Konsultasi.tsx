@@ -180,7 +180,7 @@ export default function Konsultasi() {
                       {selectedTicket.jawaban}
                     </div>
                     <span className="text-[9px] text-slate-400 font-bold ml-1">
-                      Dijawab oleh Konselor PENDEKAREMAJA • {selectedTicket.dijawab_at ? new Date(selectedTicket.dijawab_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''}
+                      Dijawab oleh Konselor PENDEKAR • {selectedTicket.dijawab_at ? new Date(selectedTicket.dijawab_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''}
                     </span>
                   </div>
                 ) : (

@@ -50,7 +50,7 @@ export default function Register({ onLoginSuccess }: RegisterProps) {
           <div className="w-20 h-20 mx-auto flex items-center justify-center mb-4">
             <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-20 h-20 object-contain drop-shadow-lg" />
           </div>
-          <h1 className="font-headline-lg text-2xl font-extrabold text-primary leading-none">PENDEKAREMAJA</h1>
+          <h1 className="font-headline-lg text-2xl font-extrabold text-primary leading-none">PENDEKAR</h1>
           <p className="text-on-surface-variant text-xs mt-2 uppercase tracking-widest font-bold">
             Pelayanan Edukasi dan Kesehatan Reproduksi Remaja
           </p>

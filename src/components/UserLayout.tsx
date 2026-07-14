@@ -78,7 +78,7 @@ export default function UserLayout({ user, onLogout, children }: UserLayoutProps
           <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-full h-full object-contain drop-shadow-sm" />
         </div>
         <div>
-          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAREMAJA</h1>
+          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAR</h1>
           <p className="text-white/80 text-[8px] tracking-[0.12em] uppercase font-bold mt-1 leading-tight max-w-[150px]">
             Pelayanan Edukasi dan Kesehatan Reproduksi Remaja
           </p>

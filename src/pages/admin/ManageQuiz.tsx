@@ -149,7 +149,25 @@ export default function ManageQuiz() {
           </h3>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile card list */}
+        <div className="block sm:hidden divide-y divide-slate-200">
+          {quizzes.map((q) => {
+            const materialTitle = materials.find(m => m.id === q.materi_id)?.judul || 'Materi Umum';
+            return (
+              <div key={q.id} className="px-4 py-4 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm text-slate-800">{q.judul}</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5 truncate">{materialTitle}</p>
+                  <p className="text-[10px] font-bold text-primary mt-1">+{q.xp_reward} XP · +{q.points_reward} Poin</p>
+                </div>
+                <button onClick={() => handleDelete(q.id)} className="p-2.5 border border-slate-200 rounded-xl text-slate-600 hover:border-red-600 hover:text-white hover:bg-red-600 transition-colors bg-white shrink-0 min-w-[40px] min-h-[40px] flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider">

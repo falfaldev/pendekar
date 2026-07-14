@@ -130,7 +130,7 @@ export default function Dashboard() {
               WebkitMaskImage: 'linear-gradient(to right, transparent, black 45%)'
             }}
             src={mascotImageUrl}
-            alt="Ilustrasi edukasi kesehatan PENDEKAREMAJA"
+            alt="Ilustrasi edukasi kesehatan PENDEKAR"
           />
         </div>
       </section>

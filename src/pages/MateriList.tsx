@@ -115,7 +115,7 @@ export default function MateriList() {
           <p className="text-xs text-on-surface-variant mt-1">Coba gunakan kata kunci pencarian yang lain.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredMaterials.map((m) => {
             const isCompleted = completedMap[m.id];
             const catName = categories.find(c => c.id === m.kategori_id)?.nama || 'Umum';
@@ -126,7 +126,7 @@ export default function MateriList() {
                 className="bg-white rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 flex flex-col hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer group"
               >
                 {/* Thumbnail Image */}
-                <div className="h-48 overflow-hidden bg-slate-100 relative">
+                <div className="h-36 sm:h-48 overflow-hidden bg-slate-100 relative">
                   <img
                     src={m.thumbnail_url || 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&q=80&w=400'}
                     alt={m.judul}
@@ -143,7 +143,7 @@ export default function MateriList() {
                 </div>
 
                 {/* Card Body */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-4 sm:p-6 flex-1 flex flex-col justify-between">
                   <div className="space-y-2">
                     <h3 className="font-bold text-base text-on-surface leading-snug group-hover:text-primary transition-colors">
                       {m.judul}

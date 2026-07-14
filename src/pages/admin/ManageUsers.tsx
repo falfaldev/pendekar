@@ -60,7 +60,7 @@ export default function ManageUsers() {
     <div className="space-y-8">
       <div>
         <h1 className="font-headline-md text-2xl font-bold text-slate-800">Kelola Pengguna</h1>
-        <p className="text-slate-500 text-sm mt-1">Daftar pengguna terdaftar di platform PENDEKAREMAJA. Anda dapat menaikkan peran atau menghapus akun.</p>
+        <p className="text-slate-500 text-sm mt-1">Daftar pengguna terdaftar di platform PENDEKAR. Anda dapat menaikkan peran atau menghapus akun.</p>
       </div>
 
       <div className="bg-white rounded-[2rem] overflow-hidden border border-slate-200 shadow-sm">

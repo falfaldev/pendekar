@@ -127,7 +127,26 @@ export default function ManageLayanan() {
           </h3>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile card list */}
+        <div className="block sm:hidden divide-y divide-slate-200">
+          {services.map((s) => (
+            <div key={s.id} className="px-4 py-4 flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm text-slate-800">{s.nama}</p>
+                <span className={`inline-block text-[9px] font-bold uppercase px-2 py-0.5 rounded-full mt-1 ${s.tipe === 'hotline' ? 'bg-rose-50 text-rose-700' : 'bg-indigo-50 text-indigo-700'}`}>{s.tipe}</span>
+                {s.telepon && <p className="text-[11px] text-slate-500 mt-1">{s.telepon}</p>}
+                {s.jam_layanan && <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-1">{s.jam_layanan}</p>}
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => handleOpenEdit(s)} className="p-2.5 border border-slate-200 rounded-xl text-slate-600 hover:border-red-500 hover:text-red-500 transition-colors bg-white min-w-[40px] min-h-[40px] flex items-center justify-center"><Edit2 className="w-3.5 h-3.5" /></button>
+                <button onClick={() => handleDelete(s.id)} className="p-2.5 border border-slate-200 rounded-xl text-slate-600 hover:border-red-600 hover:text-white hover:bg-red-600 transition-colors bg-white min-w-[40px] min-h-[40px] flex items-center justify-center"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider">

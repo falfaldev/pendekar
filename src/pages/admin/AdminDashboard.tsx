@@ -48,7 +48,7 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       {/* Welcome banner */}
       <div>
-        <h1 className="font-headline-md text-2xl font-bold text-slate-800">Ringkasan Sistem PENDEKAREMAJA</h1>
+        <h1 className="font-headline-md text-2xl font-bold text-slate-800">Ringkasan Sistem PENDEKAR</h1>
         <p className="text-slate-500 text-sm mt-1">Status dan pemantauan aktivitas pembelajaran real-time.</p>
       </div>
 

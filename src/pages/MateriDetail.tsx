@@ -1,14 +1,9 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import type { Material, Category, Comment } from '../services/api';
-import { ArrowLeft, CheckCircle2, FileText, Sparkles, MessageSquare, Eye, Send, Trash2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, FileText, Sparkles, MessageSquare, Send, Trash2, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Lazy load PDF viewer — hanya diload saat user klik "Lihat Materi"
-const PdfViewerModal = lazy(() =>
-  import('../components/PdfViewer').then(m => ({ default: m.PdfViewerModal }))
-);
 
 export default function MateriDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -22,7 +17,6 @@ export default function MateriDetail() {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [showPdfViewer, setShowPdfViewer] = useState(false);
 
   const navigate = useNavigate();
 
@@ -155,7 +149,7 @@ export default function MateriDetail() {
       )}
 
       {/* Content Article Body */}
-      <div className="bg-white rounded-[2rem] p-6 md:p-10 shadow-sm border border-outline-variant/20 space-y-6">
+      <div className="bg-white rounded-[2rem] p-4 sm:p-6 md:p-10 shadow-sm border border-outline-variant/20 space-y-6">
         {/* Render clean text with manual styles */}
         <article className="prose prose-indigo max-w-none text-on-surface text-sm md:text-base leading-relaxed whitespace-pre-line">
           {material.konten}
@@ -177,57 +171,40 @@ export default function MateriDetail() {
           </div>
         )}
 
-        {/* PDF Resources */}
+        {/* PDF Modul — langsung tampil inline seperti video */}
         {material.pdf_url && (
-          <>
-            <div className="pt-6 border-t border-outline-variant/10">
-              <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-2xl border border-blue-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md shrink-0">
-                    <FileText className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">
-                      {material.pdf_file_name || 'Modul PDF Materi'}
-                    </p>
-                    <p className="text-[11px] text-slate-500 mt-0.5">
-                      {material.pdf_file_size
-                        ? `${(material.pdf_file_size / (1024 * 1024)).toFixed(1)} MB · `
-                        : ''}
-                      Klik untuk membaca langsung di sini
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    onClick={() => setShowPdfViewer(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-md"
-                  >
-                    <Eye className="w-4 h-4" /> Lihat Materi
-                  </button>
-                  <a
-                    href={material.pdf_url}
-                    download={material.pdf_file_name || 'materi.pdf'}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-white border border-blue-200 hover:border-blue-400 text-blue-600 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
-                  >
-                    ↓ Unduh
-                  </a>
-                </div>
-              </div>
+          <div className="space-y-3 pt-6 border-t border-outline-variant/10">
+            <div className="flex items-center justify-between">
+              <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
+                <FileText className="w-4 h-4 text-primary" />
+                Modul PDF — {material.pdf_file_name || 'Materi Pendamping'}
+                {material.pdf_file_size && (
+                  <span className="text-[10px] text-slate-400 font-normal">
+                    ({(material.pdf_file_size / (1024 * 1024)).toFixed(1)} MB)
+                  </span>
+                )}
+              </h4>
+              <a
+                href={material.pdf_url}
+                download={material.pdf_file_name || 'materi.pdf'}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-primary hover:text-indigo-700 text-xs font-bold transition-colors"
+              >
+                <Download className="w-3.5 h-3.5" /> Unduh PDF
+              </a>
             </div>
 
-            {/* PDF Viewer Modal */}
-            <Suspense fallback={null}>
-              <PdfViewerModal
-                url={material.pdf_url}
-                fileName={material.pdf_file_name || `${material.judul}.pdf`}
-                isOpen={showPdfViewer}
-                onClose={() => setShowPdfViewer(false)}
+            {/* Inline PDF viewer — ukuran sama seperti video (aspect ratio 16:9) */}
+            <div className="rounded-[2rem] overflow-hidden border border-outline-variant/20 shadow-md bg-slate-100 w-full relative pt-[56.25%]">
+              <iframe
+                src={`https://docs.google.com/viewer?url=${encodeURIComponent(material.pdf_url)}&embedded=true`}
+                title={material.pdf_file_name || material.judul}
+                className="absolute top-0 left-0 w-full h-full border-0"
+                allow="autoplay"
               />
-            </Suspense>
-          </>
+            </div>
+          </div>
         )}
 
         {/* Understand Confirmation action */}
