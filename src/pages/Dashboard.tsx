@@ -27,35 +27,43 @@ export default function Dashboard() {
         const prof = await api.getCurrentProfile();
         if (prof) {
           setProfile(prof);
-          
-          // Load missions progress
-          const missionProg = await api.getMissionProgress();
+
+          // Semua request dijalankan paralel sekaligus
+          const [
+            missionProg,
+            lb,
+            ub,
+            allMaterials,
+            allGames,
+            gameResults,
+            quizResults,
+          ] = await Promise.all([
+            api.getMissionProgress(),
+            api.getLeaderboard(),
+            api.getUserBadges(),
+            api.getMaterials(),
+            api.getGames(),
+            api.getGameResults(),
+            api.getQuizResults(),
+          ]);
+
           setMissions(missionProg);
+          setLeaderboard(lb.slice(0, 4));
+          setBadges(ub.slice(0, 3));
 
-          // Load leaderboard
-          const lb = await api.getLeaderboard();
-          setLeaderboard(lb.slice(0, 4)); // top 4
-
-          // Load achievements/badges
-          const ub = await api.getUserBadges();
-          setBadges(ub.slice(0, 3)); // show last 3
-
-          // Calculate counts
-          const allMaterials = await api.getMaterials();
-          let compMats = 0;
-          for (const m of allMaterials) {
-            const isComp = await api.isMaterialCompleted(m.id);
-            if (isComp) compMats++;
-          }
+          // Cek completion semua materi secara paralel
+          const completionResults = await Promise.all(
+            allMaterials.map(m => api.isMaterialCompleted(m.id))
+          );
+          const compMats = completionResults.filter(Boolean).length;
           setMaterialsCount({ completed: compMats, total: allMaterials.length });
 
-          const allGames = await api.getGames();
-          const gameResults = await api.getGameResults();
           const compGames = new Set(gameResults.map(r => r.game_id)).size;
           setGamesCount({ completed: compGames, total: allGames.length });
 
-          const quizResults = await api.getQuizResults();
-          const maxScore = quizResults.length > 0 ? Math.max(...quizResults.map(r => r.skor)) : 0;
+          const maxScore = quizResults.length > 0
+            ? Math.max(...quizResults.map(r => r.skor))
+            : 0;
           setBestQuizScore(maxScore);
         }
       } catch (err) {
@@ -122,7 +130,7 @@ export default function Dashboard() {
               WebkitMaskImage: 'linear-gradient(to right, transparent, black 45%)'
             }}
             src={mascotImageUrl}
-            alt="Ilustrasi edukasi kesehatan PENDEKAR"
+            alt="Ilustrasi edukasi kesehatan PENDEKAREMAJA"
           />
         </div>
       </section>

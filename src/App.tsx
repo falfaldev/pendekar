@@ -22,6 +22,7 @@ import Leaderboard from './pages/Leaderboard';
 import Konsultasi from './pages/Konsultasi';
 import LayananInfo from './pages/LayananInfo';
 import ProfilePage from './pages/Profile';
+import Landing from './pages/Landing';
 
 // Games Pages
 import BenarSalah from './pages/games/BenarSalah';
@@ -83,6 +84,11 @@ export default function App() {
   return (
     <Router>
       <Routes>
+        <Route 
+          path="/" 
+          element={<Landing user={user} onLogout={handleLogout} />} 
+        />
+
         {/* Authentication Routes */}
         <Route 
           path="/login" 

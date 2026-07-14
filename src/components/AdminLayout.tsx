@@ -36,11 +36,11 @@ export default function AdminLayout({ user, onLogout, children }: AdminLayoutPro
     <div className="flex flex-col h-full py-6">
       {/* Brand logo */}
       <div className="px-6 mb-8 flex items-center gap-3">
-        <div className="w-14 h-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center shadow-sm shrink-0">
-          <ShieldAlert className="w-7 h-7 text-white" />
+        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shadow-sm shrink-0 overflow-hidden p-1">
+          <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-full h-full object-contain drop-shadow-sm" />
         </div>
         <div>
-          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAR</h1>
+          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAREMAJA</h1>
           <p className="text-red-100 text-[10px] tracking-[0.22em] uppercase font-bold mt-1">
             Panel Administrasi
           </p>

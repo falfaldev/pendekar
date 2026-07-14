@@ -179,10 +179,10 @@ export default function PuzzleEdukasi() {
       </div>
 
       {/* Main Board Container */}
-      <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-outline-variant/30 flex flex-col md:flex-row gap-8 items-center justify-center">
-        {/* Left: 3x3 Grid */}
+      <div className="bg-white rounded-[2rem] p-4 sm:p-8 shadow-sm border border-outline-variant/30 flex flex-col md:flex-row gap-6 items-center justify-center">
+        {/* Left: 3x3 Grid — ukuran responsif */}
         <div 
-          className="w-72 h-72 md:w-80 md:h-80 grid grid-cols-3 gap-1 border border-slate-300 rounded-2xl overflow-hidden shrink-0 relative shadow-md"
+          className="w-64 h-64 sm:w-80 sm:h-80 grid grid-cols-3 gap-1 border border-slate-300 rounded-2xl overflow-hidden shrink-0 relative shadow-md mx-auto"
           style={{
             backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(${imageUrl})`,
             backgroundSize: 'cover',
@@ -206,8 +206,8 @@ export default function PuzzleEdukasi() {
                   isSelected ? 'border-primary ring-2 ring-primary border-transparent z-10 scale-105' : 'border-transparent hover:brightness-105 z-0'
                 }`}
               >
-                {/* Visual grid line guides for teenage helper */}
-                <div className="absolute top-1 left-2 text-[9px] bg-black/45 text-white px-1.5 py-0.25 rounded-md font-bold select-none">
+                {/* Visual grid line guides */}
+                <div className="absolute top-1 left-1 text-[9px] bg-black/45 text-white px-1 py-px rounded-md font-bold select-none leading-none">
                   {p.correctIndex + 1}
                 </div>
               </motion.div>

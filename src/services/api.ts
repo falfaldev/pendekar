@@ -37,6 +37,10 @@ export interface Material {
   konten: string;
   video_url?: string;
   pdf_url?: string;
+  pdf_file_name?: string;
+  pdf_file_size?: number;
+  pdf_uploaded_by?: string;
+  pdf_uploaded_at?: string;
   infographic_url?: string;
   thumbnail_url?: string;
   xp_reward: number;
@@ -211,6 +215,16 @@ export interface ActivityLog {
   created_at: string;
 }
 
+export interface Comment {
+  id: string;
+  materi_id: string;
+  user_id: string;
+  user_name: string;
+  user_avatar?: string;
+  teks: string;
+  created_at: string;
+}
+
 // ==========================================
 // 2. MOCK DATABASE SETUP (LOCAL STORAGE)
 // ==========================================
@@ -301,7 +315,7 @@ Gunakan kondom secara konsisten dan benar dalam setiap hubungan seksual yang ber
 Hindari penyalahgunaan narkotika, psikotropika, dan zat adiktif lainnya, terutama jenis suntik. Pemakaian jarum secara bergantian sangat berisiko menularkan HIV langsung ke aliran darah.
 
 #### E - Education (Edukasi Diri)
-Cari informasi yang benar mengenai HIV/AIDS secara aktif, seperti yang kamu lakukan di platform **PENDEKAR** ini! Sebarkan ilmu yang benar kepada teman-teman terdekatmu untuk menghentikan rumor negatif.
+Cari informasi yang benar mengenai HIV/AIDS secara aktif, seperti yang kamu lakukan di platform **PENDEKAREMAJA** ini! Sebarkan ilmu yang benar kepada teman-teman terdekatmu untuk menghentikan rumor negatif.
 `,
     video_url: 'https://www.youtube.com/embed/5g13E14x8OQ',
     pdf_url: '#',
@@ -427,7 +441,7 @@ const MOCK_GAMES: Game[] = [
   { id: 'game-2', nama: 'Memory Card', tipe: 'memory', deskripsi: 'Buka kartu dan cari pasangan kata medis yang berkaitan (contoh: ART dengan Pengobatan).', xp_reward: 90, points_reward: 45 },
   { id: 'game-3', nama: 'Drag and Drop', tipe: 'drag_drop', deskripsi: 'Tarik kata kunci kesehatan ke kolom kategori yang tepat (Pencegahan, Penularan, atau Aman).', xp_reward: 100, points_reward: 50 },
   { id: 'game-4', nama: 'Tebak Gambar', tipe: 'tebak_gambar', deskripsi: 'Amati gambar medis/kesehatan yang ditampilkan, dan jawab nama benda tersebut dengan cepat.', xp_reward: 80, points_reward: 40 },
-  { id: 'game-5', nama: 'Puzzle Edukasi', tipe: 'puzzle', deskripsi: 'Susun kepingan gambar maskot kesehatan PENDEKAR untuk menampilkan pesan kesehatan rahasia.', xp_reward: 120, points_reward: 60 }
+  { id: 'game-5', nama: 'Puzzle Edukasi', tipe: 'puzzle', deskripsi: 'Susun kepingan gambar maskot kesehatan PENDEKAREMAJA untuk menampilkan pesan kesehatan rahasia.', xp_reward: 120, points_reward: 60 }
 ];
 
 const MOCK_GAME_QUESTIONS: GameQuestion[] = [
@@ -588,7 +602,7 @@ const MOCK_MISSIONS: DailyMission[] = [
   { id: 'misi-1', deskripsi: 'Baca 1 materi edukasi hari ini', tipe: 'baca_materi', target_count: 1, points_reward: 10 },
   { id: 'misi-2', deskripsi: 'Kerjakan 5 soal quiz pelajaran', tipe: 'kerjakan_quiz', target_count: 5, points_reward: 15 },
   { id: 'misi-3', deskripsi: 'Mainkan 1 game edukasi interaktif', tipe: 'main_game', target_count: 1, points_reward: 15 },
-  { id: 'misi-4', deskripsi: 'Login ke dashboard PENDEKAR', tipe: 'login', target_count: 1, points_reward: 5 }
+  { id: 'misi-4', deskripsi: 'Login ke dashboard PENDEKAREMAJA', tipe: 'login', target_count: 1, points_reward: 5 }
 ];
 
 const MOCK_BADGES: Badge[] = [
@@ -722,6 +736,61 @@ export const api = {
   // ----------------------------------------
   // AUTHENTICATION
   // ----------------------------------------
+  // STREAK HELPER — dipanggil saat login & getCurrentProfile
+  // ----------------------------------------
+  async updateStreak(userId: string): Promise<number> {
+    const today = new Date().toISOString().split('T')[0];
+
+    if (isSupabaseConfigured) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('streak, last_active_date')
+        .eq('id', userId)
+        .single();
+
+      if (!profile) return 1;
+
+      const lastActive = profile.last_active_date;
+      if (lastActive === today) return profile.streak; // sudah login hari ini
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      const newStreak = lastActive === yesterdayStr ? profile.streak + 1 : 1;
+
+      await supabase
+        .from('profiles')
+        .update({ streak: newStreak, last_active_date: today })
+        .eq('id', userId);
+
+      return newStreak;
+    } else {
+      const users = getLocal('pendekar_users') as Profile[];
+      const idx = users.findIndex(u => u.id === userId);
+      if (idx === -1) return 1;
+
+      const lastActive = users[idx].last_active_date;
+      if (lastActive === today) return users[idx].streak;
+
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      const newStreak = lastActive === yesterdayStr ? users[idx].streak + 1 : 1;
+      users[idx] = { ...users[idx], streak: newStreak, last_active_date: today };
+      setLocal('pendekar_users', users);
+
+      const cur = localStorage.getItem('pendekar_current_user');
+      if (cur && JSON.parse(cur).id === userId) {
+        setLocal('pendekar_current_user', users[idx]);
+        notifyProfileChanged();
+      }
+      return newStreak;
+    }
+  },
+
+  // ----------------------------------------
   async login(email: string, password?: string): Promise<Profile> {
     if (!password || password.trim() === '') {
       throw new Error('Kata sandi wajib diisi untuk login.');
@@ -767,7 +836,18 @@ export const api = {
         return insertedProfile as Profile;
       }
 
-      return profile as Profile;
+      // Update streak saat login
+      await this.updateStreak(userId);
+      await this.trackMissionProgressForUser(userId, 'login', 1);
+
+      // Ambil ulang profil setelah streak diupdate
+      const { data: updatedProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      return (updatedProfile || profile) as Profile;
     } else {
       // Mock login: match email with a profile name or email
       const users = getLocal('pendekar_users') as Profile[];
@@ -780,13 +860,20 @@ export const api = {
       }
 
       if (!user) throw new Error('User tidak ditemukan.');
-      setLocal('pendekar_current_user', user);
+
+      // Update streak mock mode
+      await this.updateStreak(user.id);
+
+      // Ambil user terbaru setelah streak update
+      const updatedUsers = getLocal('pendekar_users') as Profile[];
+      const updatedUser = updatedUsers.find(u => u.id === user!.id) || user;
+      setLocal('pendekar_current_user', updatedUser);
       notifyProfileChanged();
       
       // Track Daily Mission: Login
       await this.trackMissionProgress('login', 1);
       
-      return user;
+      return updatedUser;
     }
   },
 
@@ -2194,6 +2281,50 @@ export const api = {
     return fileToDataUrl(file);
   },
 
+  async uploadPdf(file: File): Promise<{ url: string; fileName: string; fileSize: number }> {
+    const PDF_BUCKET = 'materi-pdf';
+    const MAX_SIZE = 20 * 1024 * 1024; // 20MB
+
+    if (file.type !== 'application/pdf') {
+      throw new Error('Hanya file PDF yang diizinkan.');
+    }
+    if (file.size > MAX_SIZE) {
+      throw new Error('Ukuran file melebihi batas 20 MB.');
+    }
+
+    const safeName = file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9._-]/g, '');
+    const filePath = `pdf/${Date.now()}_${safeName}`;
+
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.storage.from(PDF_BUCKET).upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true,
+      });
+      if (error) throw new Error(`Upload gagal: ${error.message}`);
+
+      const { data } = supabase.storage.from(PDF_BUCKET).getPublicUrl(filePath);
+      return { url: data.publicUrl, fileName: file.name, fileSize: file.size };
+    }
+
+    // Fallback untuk mode offline: simpan sebagai data URL di localStorage
+    const dataUrl = await fileToDataUrl(file);
+    return { url: dataUrl, fileName: file.name, fileSize: file.size };
+  },
+
+  async deletePdf(pdfUrl: string): Promise<void> {
+    if (!isSupabaseConfigured || !pdfUrl) return;
+    try {
+      // Extract file path from URL
+      const url = new URL(pdfUrl);
+      const pathParts = url.pathname.split('/materi-pdf/');
+      if (pathParts.length > 1) {
+        await supabase.storage.from('materi-pdf').remove([pathParts[1]]);
+      }
+    } catch {
+      // Ignore delete errors — file may already be gone
+    }
+  },
+
   async createMaterial(material: Omit<Material, 'id'>): Promise<Material> {
     // Remove undefined fields — Supabase rejects them, use null or omit entirely
     const cleanPayload = Object.fromEntries(
@@ -2333,6 +2464,95 @@ export const api = {
       const services = getLocal('pendekar_health_services') as HealthService[];
       const filtered = services.filter(s => s.id !== id);
       setLocal('pendekar_health_services', filtered);
+    }
+  },
+
+  // ----------------------------------------
+  // KOMENTAR MATERI
+  // ----------------------------------------
+  async getComments(materiId: string): Promise<Comment[]> {
+    if (isSupabaseConfigured) {
+      const { data, error } = await supabase
+        .from('komentar_materi')
+        .select('*, profiles(name, avatar_url)')
+        .eq('materi_id', materiId)
+        .order('created_at', { ascending: true });
+      if (error) return [];
+      return (data || []).map((d: any) => ({
+        id: d.id,
+        materi_id: d.materi_id,
+        user_id: d.user_id,
+        user_name: d.profiles?.name || 'Remaja',
+        user_avatar: d.profiles?.avatar_url || '',
+        teks: d.teks,
+        created_at: d.created_at,
+      }));
+    } else {
+      const comments = getLocal('pendekar_komentar') as Comment[];
+      const users = getLocal('pendekar_users') as Profile[];
+      return comments
+        .filter(c => c.materi_id === materiId)
+        .map(c => ({
+          ...c,
+          user_name: users.find(u => u.id === c.user_id)?.name || c.user_name || 'Remaja',
+          user_avatar: users.find(u => u.id === c.user_id)?.avatar_url || '',
+        }));
+    }
+  },
+
+  async addComment(materiId: string, teks: string): Promise<Comment> {
+    const cur = await this.getCurrentProfile();
+    if (!cur) throw new Error('Unauthorized');
+    if (!teks.trim()) throw new Error('Komentar tidak boleh kosong.');
+
+    if (isSupabaseConfigured) {
+      const { data, error } = await supabase
+        .from('komentar_materi')
+        .insert({ materi_id: materiId, user_id: cur.id, teks: teks.trim() })
+        .select('*, profiles(name, avatar_url)')
+        .single();
+      if (error) throw error;
+      return {
+        id: data.id,
+        materi_id: data.materi_id,
+        user_id: data.user_id,
+        user_name: (data as any).profiles?.name || cur.name,
+        user_avatar: (data as any).profiles?.avatar_url || cur.avatar_url || '',
+        teks: data.teks,
+        created_at: data.created_at,
+      };
+    } else {
+      const newComment: Comment = {
+        id: 'cmt-' + Date.now(),
+        materi_id: materiId,
+        user_id: cur.id,
+        user_name: cur.name,
+        user_avatar: cur.avatar_url || '',
+        teks: teks.trim(),
+        created_at: new Date().toISOString(),
+      };
+      const comments = getLocal('pendekar_komentar');
+      comments.push(newComment);
+      setLocal('pendekar_komentar', comments);
+      return newComment;
+    }
+  },
+
+  async deleteComment(commentId: string): Promise<void> {
+    const cur = await this.getCurrentProfile();
+    if (!cur) throw new Error('Unauthorized');
+
+    if (isSupabaseConfigured) {
+      // Hapus langsung — RLS policy akan memfilter berdasarkan user_id atau is_admin()
+      const { error } = await supabase
+        .from('komentar_materi')
+        .delete()
+        .eq('id', commentId);
+      if (error) throw error;
+    } else {
+      const comments = getLocal('pendekar_komentar') as Comment[];
+      const filtered = comments.filter(c => !(c.id === commentId && (c.user_id === cur.id || cur.role === 'admin')));
+      setLocal('pendekar_komentar', filtered);
     }
   }
 };

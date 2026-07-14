@@ -284,7 +284,7 @@ export default function MemoryCard() {
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white mb-2 shadow-inner">
                     <ShieldCheck className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] tracking-widest font-extrabold uppercase text-white/90">PENDEKAR</span>
+                  <span className="text-[10px] tracking-widest font-extrabold uppercase text-white/90">PENDEKAREMAJA</span>
                 </div>
                 
                 {/* Front side of Card (Flipped) */}

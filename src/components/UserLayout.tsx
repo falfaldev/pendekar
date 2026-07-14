@@ -74,13 +74,13 @@ export default function UserLayout({ user, onLogout, children }: UserLayoutProps
     <div className="flex flex-col h-full py-6">
       {/* Brand logo */}
       <div className="px-6 mb-8 flex items-center gap-3">
-        <div className="w-14 h-14 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center shadow-sm shrink-0">
-          <ShieldCheck className="w-7 h-7 text-white" />
+        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shadow-sm shrink-0 overflow-hidden p-1">
+          <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-full h-full object-contain drop-shadow-sm" />
         </div>
         <div>
-          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAR</h1>
-          <p className="text-white/80 text-[9px] tracking-[0.22em] uppercase font-bold mt-1">
-            Remaja Cerdas HIV/AIDS
+          <h1 className="font-headline-md text-xl font-extrabold text-white leading-none">PENDEKAREMAJA</h1>
+          <p className="text-white/80 text-[8px] tracking-[0.12em] uppercase font-bold mt-1 leading-tight max-w-[150px]">
+            Pelayanan Edukasi dan Kesehatan Reproduksi Remaja
           </p>
         </div>
       </div>
@@ -191,20 +191,20 @@ export default function UserLayout({ user, onLogout, children }: UserLayoutProps
             </div>
           </div>
 
-          <div className="flex items-center gap-3 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             {/* Points Badge */}
             <div 
               onClick={() => navigate('/profile')}
-              className="flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-low px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-outline-variant/30 transition-colors cursor-pointer active:opacity-75"
+              className="flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-low px-3 py-2 rounded-full border border-outline-variant/30 transition-colors cursor-pointer active:opacity-75 min-h-[40px]"
             >
               <Star className="w-4 h-4 text-tertiary-fixed-dim fill-current" />
-              <span className="font-bold text-xs md:text-sm text-primary">{user.points} Poin</span>
+              <span className="font-bold text-xs md:text-sm text-primary">{user.points} Pts</span>
             </div>
 
-            {/* Streak Badge */}
+            {/* Streak Badge — sembunyikan di layar sangat kecil */}
             <div 
               onClick={() => navigate('/profile')}
-              className="flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-low px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-outline-variant/30 transition-colors cursor-pointer active:opacity-75"
+              className="hidden sm:flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-low px-3 py-2 rounded-full border border-outline-variant/30 transition-colors cursor-pointer active:opacity-75 min-h-[40px]"
             >
               <Flame className="w-4 h-4 text-orange-500 fill-current" />
               <span className="font-bold text-xs md:text-sm text-primary">{user.streak} Streak</span>

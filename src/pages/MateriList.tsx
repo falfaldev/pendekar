@@ -24,11 +24,10 @@ export default function MateriList() {
         setCategories(cats);
         setMaterials(mats);
 
-        // Fetch completion statuses
+        // Cek semua completion secara paralel sekaligus
+        const completions = await Promise.all(mats.map(m => api.isMaterialCompleted(m.id)));
         const map: Record<string, boolean> = {};
-        for (const m of mats) {
-          map[m.id] = await api.isMaterialCompleted(m.id);
-        }
+        mats.forEach((m, i) => { map[m.id] = completions[i]; });
         setCompletedMap(map);
       } catch (err) {
         console.error('Error loading materials:', err);
@@ -162,8 +161,8 @@ export default function MateriList() {
                         </span>
                       )}
                       {m.pdf_url && (
-                        <span className="flex items-center gap-1">
-                          <FileText className="w-3.5 h-3.5 text-blue-500" /> PDF
+                        <span className="flex items-center gap-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">
+                          <FileText className="w-3.5 h-3.5" /> Baca PDF
                         </span>
                       )}
                     </div>

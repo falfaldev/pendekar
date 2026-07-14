@@ -16,17 +16,19 @@ export default function GameList() {
     async function loadGames() {
       setIsLoading(true);
       try {
-        const list = await api.getGames();
+        const [list, results] = await Promise.all([
+          api.getGames(),
+          api.getGameResults(),
+        ]);
         setGames(list);
 
-        const results = await api.getGameResults();
         const finishedIds = new Set<string>(results.map(r => r.game_id));
         setCompletedGames(finishedIds);
 
+        // Load semua progress game secara paralel
+        const progressArr = await Promise.all(list.map(g => api.getGameProgress(g.id)));
         const progressMap: Record<string, any> = {};
-        for (const game of list) {
-          progressMap[game.id] = await api.getGameProgress(game.id);
-        }
+        list.forEach((g, i) => { progressMap[g.id] = progressArr[i]; });
         setGameProgress(progressMap);
       } catch (err) {
         console.error('Error loading games list:', err);

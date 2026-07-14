@@ -43,12 +43,12 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
       <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl p-8 border border-white/20 relative z-10">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary-fixed/40 rounded-2xl mx-auto flex items-center justify-center text-primary shadow-sm mb-4">
-            <ShieldCheck className="w-10 h-10" />
+          <div className="w-20 h-20 mx-auto flex items-center justify-center mb-4">
+            <img src="/logo-pendekar.svg" alt="Logo PENDEKAR" className="w-20 h-20 object-contain drop-shadow-lg" />
           </div>
-          <h1 className="font-headline-lg text-2xl font-extrabold text-primary leading-none">PENDEKAR</h1>
+          <h1 className="font-headline-lg text-2xl font-extrabold text-primary leading-none">PENDEKAREMAJA</h1>
           <p className="text-on-surface-variant text-xs mt-2 uppercase tracking-widest font-bold">
-            Pendidikan HIV/AIDS Remaja Cerdas
+            Pelayanan Edukasi dan Kesehatan Reproduksi Remaja
           </p>
         </div>
 

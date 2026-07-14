@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
-import type { Material, Category } from '../services/api';
-import { ArrowLeft, CheckCircle2, FileText, Sparkles, MessageSquare, Download } from 'lucide-react';
+import type { Material, Category, Comment } from '../services/api';
+import { ArrowLeft, CheckCircle2, FileText, Sparkles, MessageSquare, Eye, Send, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// Lazy load PDF viewer — hanya diload saat user klik "Lihat Materi"
+const PdfViewerModal = lazy(() =>
+  import('../components/PdfViewer').then(m => ({ default: m.PdfViewerModal }))
+);
 
 export default function MateriDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -12,12 +17,12 @@ export default function MateriDetail() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [rewardData, setRewardData] = useState<{ xpGained: number; pointGained: number; leveledUp: boolean }>({ xpGained: 0, pointGained: 0, leveledUp: false });
-  const [comments, setComments] = useState<any[]>([
-    { id: 1, author: 'Dinda Putri', text: 'Sangat bermanfaat! Penjelasannya mudah dipahami buat anak sekolah.', date: '1 jam yang lalu' },
-    { id: 2, author: 'Bima Pratama', text: 'Baru tahu kalau nyamuk ternyata tidak menularkan HIV. Mitosnya seram banget sebelumnya.', date: '2 jam yang lalu' }
-  ]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPdfViewer, setShowPdfViewer] = useState(false);
 
   const navigate = useNavigate();
 
@@ -26,13 +31,20 @@ export default function MateriDetail() {
       if (!slug) return;
       setIsLoading(true);
       try {
-        const mat = await api.getMaterialBySlug(slug);
+        const [mat, user] = await Promise.all([
+          api.getMaterialBySlug(slug),
+          api.getCurrentProfile(),
+        ]);
+        setCurrentUser(user);
         if (mat) {
           setMaterial(mat);
-          const comp = await api.isMaterialCompleted(mat.id);
+          const [comp, cats, cmts] = await Promise.all([
+            api.isMaterialCompleted(mat.id),
+            api.getCategories(),
+            api.getComments(mat.id),
+          ]);
           setIsCompleted(comp);
-
-          const cats = await api.getCategories();
+          setComments(cmts);
           const cat = cats.find(c => c.id === mat.kategori_id);
           if (cat) setCategory(cat);
         }
@@ -57,20 +69,28 @@ export default function MateriDetail() {
     }
   };
 
-  const handleAddComment = (e: React.FormEvent) => {
+  const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || !material) return;
+    setIsSubmittingComment(true);
+    try {
+      const added = await api.addComment(material.id, newComment);
+      setComments(prev => [...prev, added]);
+      setNewComment('');
+    } catch (err: any) {
+      alert(err.message || 'Gagal mengirim komentar.');
+    } finally {
+      setIsSubmittingComment(false);
+    }
+  };
 
-    setComments([
-      ...comments,
-      {
-        id: comments.length + 1,
-        author: 'Kamu',
-        text: newComment,
-        date: 'Baru saja'
-      }
-    ]);
-    setNewComment('');
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await api.deleteComment(commentId);
+      setComments(prev => prev.filter(c => c.id !== commentId));
+    } catch (err) {
+      console.error('Error deleting comment:', err);
+    }
   };
 
   if (isLoading) {
@@ -159,24 +179,55 @@ export default function MateriDetail() {
 
         {/* PDF Resources */}
         {material.pdf_url && (
-          <div className="pt-6 border-t border-outline-variant/10 flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-outline-variant/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-800">Modul Pendamping PDF</p>
-                <p className="text-[10px] text-slate-500">Materi PDF Pendidikan Remaja Cerdas</p>
+          <>
+            <div className="pt-6 border-t border-outline-variant/10">
+              <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-2xl border border-blue-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md shrink-0">
+                    <FileText className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-800">
+                      {material.pdf_file_name || 'Modul PDF Materi'}
+                    </p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      {material.pdf_file_size
+                        ? `${(material.pdf_file_size / (1024 * 1024)).toFixed(1)} MB · `
+                        : ''}
+                      Klik untuk membaca langsung di sini
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => setShowPdfViewer(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-md"
+                  >
+                    <Eye className="w-4 h-4" /> Lihat Materi
+                  </button>
+                  <a
+                    href={material.pdf_url}
+                    download={material.pdf_file_name || 'materi.pdf'}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-white border border-blue-200 hover:border-blue-400 text-blue-600 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+                  >
+                    ↓ Unduh
+                  </a>
+                </div>
               </div>
             </div>
-            <a
-              href="#"
-              onClick={(e) => { e.preventDefault(); alert('Mengunduh materi pembelajaran...'); }}
-              className="bg-white border border-outline-variant/30 hover:border-primary text-primary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
-            >
-              <Download className="w-4 h-4" /> Unduh
-            </a>
-          </div>
+
+            {/* PDF Viewer Modal */}
+            <Suspense fallback={null}>
+              <PdfViewerModal
+                url={material.pdf_url}
+                fileName={material.pdf_file_name || `${material.judul}.pdf`}
+                isOpen={showPdfViewer}
+                onClose={() => setShowPdfViewer(false)}
+              />
+            </Suspense>
+          </>
         )}
 
         {/* Understand Confirmation action */}
@@ -201,45 +252,82 @@ export default function MateriDetail() {
       {/* Discussion Section */}
       <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-outline-variant/20 space-y-6">
         <h3 className="font-headline-sm text-base font-bold text-on-surface flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-primary" /> Ruang Komentar & Diskusi
+          <MessageSquare className="w-5 h-5 text-primary" />
+          Ruang Komentar & Diskusi
+          <span className="text-xs font-normal text-slate-400">({comments.length})</span>
         </h3>
-        
+
         {/* Comment list */}
         <div className="space-y-4">
-          {comments.map((c) => (
-            <div key={c.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 text-primary flex items-center justify-center font-bold text-xs shrink-0 uppercase">
-                {c.author[0]}
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-xs text-on-surface">{c.author}</span>
-                  <span className="text-[9px] text-on-surface-variant/70">{c.date}</span>
-                </div>
-                <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                  {c.text}
-                </p>
-              </div>
+          {comments.length === 0 ? (
+            <div className="text-center py-8 text-slate-400">
+              <MessageSquare className="w-10 h-10 mx-auto mb-2 opacity-30" />
+              <p className="text-sm">Belum ada komentar. Jadilah yang pertama!</p>
             </div>
-          ))}
+          ) : (
+            comments.map((c) => {
+              const isOwn = currentUser?.id === c.user_id;
+              const isAdmin = currentUser?.role === 'admin';
+              return (
+                <div key={c.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex gap-3 group">
+                  {/* Avatar */}
+                  <img
+                    src={c.user_avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}
+                    alt={c.user_name}
+                    className="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-on-surface">{c.user_name}</span>
+                        <span className="text-[9px] text-on-surface-variant/70">
+                          {new Date(c.created_at).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      {(isOwn || isAdmin) && (
+                        <button
+                          onClick={() => handleDeleteComment(c.id)}
+                          className="p-1.5 text-slate-300 hover:text-red-500 active:text-red-500 transition-all rounded-lg shrink-0 min-w-[36px] min-h-[36px] flex items-center justify-center"
+                          title="Hapus komentar"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">{c.teks}</p>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
         {/* Comment input form */}
         <form onSubmit={handleAddComment} className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Tulis pendapat atau pertanyaanmu..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="flex-1 bg-surface-container/50 border border-outline-variant/20 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors"
-            required
-          />
-          <button
-            type="submit"
-            className="bg-primary hover:bg-indigo-700 text-white font-bold text-xs px-5 py-3 rounded-xl transition-colors shadow-sm shrink-0"
-          >
-            Kirim
-          </button>
+          {currentUser?.avatar_url && (
+            <img src={currentUser.avatar_url} alt="" className="w-9 h-9 rounded-full object-cover border border-slate-200 shrink-0 mt-0.5" />
+          )}
+          <div className="flex-1 flex gap-2">
+            <input
+              type="text"
+              placeholder="Tulis pendapat atau pertanyaanmu..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              disabled={isSubmittingComment}
+              className="flex-1 bg-surface-container/50 border border-outline-variant/20 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors"
+              required
+            />
+            <button
+              type="submit"
+              disabled={isSubmittingComment || !newComment.trim()}
+              className="bg-primary hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-xs px-4 py-3 rounded-xl transition-colors shadow-sm shrink-0 flex items-center gap-1.5"
+            >
+              {isSubmittingComment
+                ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                : <Send className="w-4 h-4" />
+              }
+            </button>
+          </div>
         </form>
       </div>
 

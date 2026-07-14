@@ -73,11 +73,8 @@ export default function Profile() {
           api.getMaterials()
         ]);
 
-        let compMats = 0;
-        for (const m of allMaterials) {
-          const isComp = await api.isMaterialCompleted(m.id);
-          if (isComp) compMats++;
-        }
+        const completions = await Promise.all(allMaterials.map(m => api.isMaterialCompleted(m.id)));
+        const compMats = completions.filter(Boolean).length;
 
         setStats({
           materialsCompleted: compMats,

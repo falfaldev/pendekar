@@ -76,7 +76,7 @@ export default function Konsultasi() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Side: Ticket List */}
-        <div className="lg:col-span-4 bg-white rounded-3xl border border-outline-variant/30 overflow-hidden shadow-sm flex flex-col h-[600px]">
+        <div className="lg:col-span-4 bg-white rounded-3xl border border-outline-variant/30 overflow-hidden shadow-sm flex flex-col h-[420px] lg:h-[600px]">
           {/* Tabs */}
           <div className="flex border-b border-outline-variant/10 text-center font-bold text-[10px] text-slate-500 bg-slate-50">
             <button
@@ -141,7 +141,7 @@ export default function Konsultasi() {
         </div>
 
         {/* Right Side: Conversation Panel */}
-        <div className="lg:col-span-8 bg-white rounded-3xl border border-outline-variant/30 overflow-hidden shadow-sm flex flex-col h-[600px] justify-between">
+        <div className="lg:col-span-8 bg-white rounded-3xl border border-outline-variant/30 overflow-hidden shadow-sm flex flex-col h-[420px] lg:h-[600px] justify-between">
           {selectedTicket ? (
             <div className="flex-1 flex flex-col justify-between overflow-hidden">
               {/* Ticket header */}
@@ -180,7 +180,7 @@ export default function Konsultasi() {
                       {selectedTicket.jawaban}
                     </div>
                     <span className="text-[9px] text-slate-400 font-bold ml-1">
-                      Dijawab oleh Konselor PENDEKAR • {selectedTicket.dijawab_at ? new Date(selectedTicket.dijawab_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''}
+                      Dijawab oleh Konselor PENDEKAREMAJA • {selectedTicket.dijawab_at ? new Date(selectedTicket.dijawab_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''}
                     </span>
                   </div>
                 ) : (

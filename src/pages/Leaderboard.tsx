@@ -116,15 +116,40 @@ export default function Leaderboard() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile: card list | Desktop: table */}
+        <div className="block sm:hidden divide-y divide-outline-variant/10">
+          {list.map((item, index) => {
+            const rank = index + 1;
+            const isCurrentUser = item.id === currentUser.id;
+            const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+            return (
+              <div key={item.id} className={`flex items-center gap-3 px-4 py-3 ${isCurrentUser ? 'bg-primary/5' : ''}`}>
+                <span className="w-8 text-center font-bold text-sm text-slate-600 shrink-0">{medal}</span>
+                <img src={item.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}
+                  alt={item.name} className="w-10 h-10 rounded-full object-cover border border-outline-variant/30 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm text-slate-800 truncate">
+                    {item.name} {isCurrentUser && <span className="text-[10px] font-normal text-primary">(Kamu)</span>}
+                  </p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[10px] text-slate-500">Lvl {item.level}</span>
+                    <span className="text-[10px] text-orange-500">🔥 {item.streak}h</span>
+                  </div>
+                </div>
+                <span className="font-extrabold text-primary text-sm shrink-0">{item.points.toLocaleString('id-ID')}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-outline-variant/10 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
                 <th className="px-6 py-4">Peringkat</th>
                 <th className="px-6 py-4">Remaja</th>
                 <th className="px-6 py-4">Level</th>
-                <th className="px-6 py-4 text-center">Streak Belajar</th>
-                <th className="px-6 py-4 text-right">Reward</th>
+                <th className="px-6 py-4 text-center">Streak</th>
                 <th className="px-6 py-4 text-right">Poin</th>
               </tr>
             </thead>
@@ -132,45 +157,26 @@ export default function Leaderboard() {
               {list.map((item, index) => {
                 const rank = index + 1;
                 const isCurrentUser = item.id === currentUser.id;
-                
                 return (
-                  <tr 
-                    key={item.id}
-                    className={`transition-colors ${
-                      isCurrentUser ? 'bg-primary/5 font-bold' : 'hover:bg-slate-50/50'
-                    }`}
-                  >
+                  <tr key={item.id} className={`transition-colors ${isCurrentUser ? 'bg-primary/5 font-bold' : 'hover:bg-slate-50/50'}`}>
                     <td className="px-6 py-4 font-bold text-slate-600">
                       {rank === 1 ? '🥇 1' : rank === 2 ? '🥈 2' : rank === 3 ? '🥉 3' : `#${rank}`}
                     </td>
-                    <td className="px-6 py-4 flex items-center gap-3">
-                      <img
-                        src={item.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}
-                        alt={item.name}
-                        className="w-8 h-8 rounded-full border border-outline-variant/30 object-cover"
-                      />
-                      <div>
-                        <p className="text-slate-800 font-bold">
-                          {item.name} {isCurrentUser && <span className="text-[10px] font-normal text-primary ml-1">(Kamu)</span>}
-                        </p>
-                        <p className="text-[9px] text-slate-500 font-normal">{item.role === 'admin' ? 'Administrator' : 'Remaja Cerdas'}</p>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <img src={item.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}
+                          alt={item.name} className="w-8 h-8 rounded-full border border-outline-variant/30 object-cover" />
+                        <div>
+                          <p className="text-slate-800 font-bold">{item.name} {isCurrentUser && <span className="text-[10px] font-normal text-primary ml-1">(Kamu)</span>}</p>
+                          <p className="text-[9px] text-slate-500">{item.role === 'admin' ? 'Administrator' : 'Remaja Cerdas'}</p>
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 font-bold text-slate-700">Level {item.level}</td>
                     <td className="px-6 py-4 text-center">
                       <div className="inline-flex items-center gap-1 bg-orange-50 border border-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-[10px] font-bold">
-                        <Flame className="w-3.5 h-3.5 fill-current" />
-                        <span>{item.streak} Hari</span>
+                        <Flame className="w-3.5 h-3.5 fill-current" /><span>{item.streak} Hari</span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      {item.reward_bonus && item.reward_bonus > 0 ? (
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700">
-                          +{item.reward_bonus} Pts
-                        </span>
-                      ) : (
-                        <span className="text-[10px] text-slate-400">—</span>
-                      )}
                     </td>
                     <td className="px-6 py-4 text-right font-extrabold text-primary text-sm">
                       {item.points.toLocaleString('id-ID')}

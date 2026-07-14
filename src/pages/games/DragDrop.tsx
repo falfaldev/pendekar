@@ -57,15 +57,15 @@ export default function DragDrop() {
     loadGame();
   }, [id]);
 
+  // ── State untuk tap-to-select (mobile friendly) ──
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
   const resetGame = (gameItems: Item[], cats: string[]) => {
     const initialPlaced: Record<string, string[]> = {};
-    cats.forEach(c => {
-      initialPlaced[c] = [];
-    });
+    cats.forEach(c => { initialPlaced[c] = []; });
     setPlacedItems(initialPlaced);
     setDragOverCategory(null);
-    
-    // Set all items as unplaced strings
+    setSelectedItem(null);
     const texts = gameItems.map(i => i.text).sort(() => Math.random() - 0.5);
     setUnplacedItems(texts);
     setIsFinished(false);
@@ -73,39 +73,46 @@ export default function DragDrop() {
     setScore(0);
   };
 
-  // Drag handlers
+  // ── Drag handlers (desktop) ──
   const handleDragStart = (e: React.DragEvent, text: string) => {
     e.dataTransfer.setData('text/plain', text);
   };
-
   const handleDragOver = (e: React.DragEvent, category: string) => {
     e.preventDefault();
     setDragOverCategory(category);
   };
-
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOverCategory(null);
   };
-
   const handleDrop = (e: React.DragEvent, targetCategory: string) => {
     e.preventDefault();
     setDragOverCategory(null);
     const itemText = e.dataTransfer.getData('text/plain');
     if (!itemText) return;
+    moveItemToCategory(itemText, targetCategory);
+  };
 
-    // Remove from unplaced
+  // ── Tap handlers (mobile) ──
+  const handleItemTap = (text: string) => {
+    // Kalau item sudah dipilih sebelumnya, batalkan pilihan
+    setSelectedItem(prev => prev === text ? null : text);
+  };
+
+  const handleCategoryTap = (category: string) => {
+    if (!selectedItem) return;
+    moveItemToCategory(selectedItem, category);
+    setSelectedItem(null);
+  };
+
+  // ── Logic pindah item ──
+  const moveItemToCategory = (itemText: string, targetCategory: string) => {
     const nextUnplaced = unplacedItems.filter(i => i !== itemText);
-    
-    // Remove from other categories if already placed
     const nextPlaced: Record<string, string[]> = {};
     Object.keys(placedItems).forEach(cat => {
       nextPlaced[cat] = placedItems[cat].filter(i => i !== itemText);
     });
-
-    // Add to target category
     nextPlaced[targetCategory].push(itemText);
-
     setUnplacedItems(nextUnplaced);
     setPlacedItems(nextPlaced);
   };
@@ -241,55 +248,71 @@ export default function DragDrop() {
       </div>
 
       <div className="text-center">
-        <h2 className="font-bold text-lg text-slate-800">Tarik dan Letakkan (Drag & Drop)</h2>
-        <p className="text-xs text-on-surface-variant mt-1">Tarik kartu kata kunci di bawah dan letakkan ke kolom yang sesuai. Level saat ini: {currentLevel}.</p>
+        <h2 className="font-bold text-lg text-slate-800">Pilih & Letakkan</h2>
+        <p className="text-xs text-on-surface-variant mt-1">
+          Ketuk item di bawah lalu ketuk kolom tujuan. Level saat ini: {currentLevel}.
+        </p>
+        {selectedItem && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+            className="mt-2 inline-flex items-center gap-2 bg-primary/10 border border-primary/30 text-primary px-4 py-1.5 rounded-full text-xs font-bold"
+          >
+            <span>Dipilih:</span>
+            <span className="bg-primary text-white px-2 py-0.5 rounded-lg">{selectedItem}</span>
+            <button onClick={() => setSelectedItem(null)} className="text-primary/60 hover:text-primary ml-1">✕</button>
+          </motion.div>
+        )}
       </div>
 
-      {/* Main Board Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+      {/* Main Board Layout — responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
         {categories.map(cat => {
           const count = placedItems[cat]?.length || 0;
           const isOver = dragOverCategory === cat;
+          const isTarget = !!selectedItem; // ada item dipilih
           
           return (
             <motion.div
               key={cat}
-              animate={{ 
-                scale: isOver ? 1.02 : 1,
-                borderColor: isOver ? '#3525cd' : 'rgba(0,0,0,0.1)'
-              }}
+              animate={{ scale: isOver ? 1.02 : 1 }}
               transition={{ duration: 0.2 }}
               onDragOver={(e: any) => handleDragOver(e, cat)}
               onDragLeave={handleDragLeave}
               onDrop={(e: any) => handleDrop(e, cat)}
-              className={`bg-white rounded-2xl p-5 border-2 border-dashed min-h-[300px] flex flex-col shadow-sm transition-colors ${
-                isOver ? 'bg-indigo-50/50' : 'hover:bg-slate-50/50'
+              onClick={() => handleCategoryTap(cat)}
+              className={`bg-white rounded-2xl p-4 border-2 border-dashed min-h-[180px] sm:min-h-[250px] flex flex-col shadow-sm transition-all cursor-pointer ${
+                isOver
+                  ? 'border-primary bg-indigo-50/50 scale-[1.02]'
+                  : isTarget
+                    ? 'border-primary/40 bg-primary/5 hover:border-primary hover:bg-primary/10'
+                    : 'border-slate-200 hover:bg-slate-50/50'
               }`}
             >
               <h3 className={`font-bold text-sm text-center mb-3 pb-2 border-b border-outline-variant/10 uppercase tracking-wider ${
                 cat === 'Pencegahan' ? 'text-indigo-700' : cat === 'Penularan' ? 'text-red-700' : 'text-emerald-700'
               }`}>
                 {cat} ({count})
+                {isTarget && <span className="block text-[10px] text-primary/60 normal-case font-normal mt-0.5">Ketuk untuk letakkan</span>}
               </h3>
               
-              <div className="flex-1 space-y-3">
+              <div className="flex-1 flex flex-wrap gap-2 content-start">
                 {placedItems[cat]?.map(itemText => (
                   <motion.div
                     key={itemText}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => handleRemoveItem(itemText, cat)}
-                    className="p-3 bg-white border border-slate-200 rounded-xl font-bold text-xs text-slate-800 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all flex justify-between items-center cursor-pointer shadow-sm group"
+                    onClick={(e) => { e.stopPropagation(); handleRemoveItem(itemText, cat); }}
+                    className="p-2.5 bg-white border border-slate-200 rounded-xl font-bold text-xs text-slate-800 active:bg-red-50 active:border-red-200 active:text-red-600 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
                     <span>{itemText}</span>
-                    <span className="text-[9px] font-normal uppercase text-slate-400 group-hover:text-red-500">Hapus</span>
+                    <span className="text-[10px] text-slate-400">✕</span>
                   </motion.div>
                 ))}
                 
                 {count === 0 && (
-                  <div className="h-full flex items-center justify-center text-center py-12 pointer-events-none">
-                    <p className={`text-[10px] uppercase tracking-widest font-bold ${isOver ? 'text-primary' : 'text-slate-400'}`}>
-                      {isOver ? 'Lepas di sini' : 'Letakkan di sini'}
+                  <div className="w-full flex items-center justify-center text-center py-8 pointer-events-none">
+                    <p className={`text-[10px] uppercase tracking-widest font-bold ${isTarget ? 'text-primary/50' : 'text-slate-300'}`}>
+                      {isTarget ? '↑ Ketuk kolom ini' : 'Kosong'}
                     </p>
                   </div>
                 )}
@@ -300,31 +323,36 @@ export default function DragDrop() {
       </div>
 
       {/* Unplaced Items Pool */}
-      <div className="bg-white rounded-[2rem] p-6 border border-outline-variant/30 shadow-sm space-y-4">
-        <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">Item Untuk Diklasifikasikan:</h4>
+      <div className="bg-white rounded-[2rem] p-5 border border-outline-variant/30 shadow-sm space-y-3">
+        <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">
+          Item untuk diklasifikasikan — ketuk untuk memilih:
+        </h4>
         
-        <div className="flex flex-wrap gap-3 min-h-[50px]">
+        <div className="flex flex-wrap gap-2.5 min-h-[50px]">
           {unplacedItems.map(itemText => (
             <motion.div
               layout
               key={itemText}
               draggable
               onDragStart={(e: any) => handleDragStart(e, itemText)}
-              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-3 bg-primary text-white font-bold text-xs rounded-xl shadow-sm hover:bg-indigo-700 transition-colors cursor-grab active:cursor-grabbing"
+              onClick={() => handleItemTap(itemText)}
+              className={`px-4 py-3 font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer select-none min-h-[44px] flex items-center ${
+                selectedItem === itemText
+                  ? 'bg-yellow-400 text-slate-900 ring-2 ring-yellow-500 scale-105 shadow-lg'
+                  : 'bg-primary text-white hover:bg-indigo-700 active:bg-indigo-800'
+              }`}
             >
-              {itemText}
+              {selectedItem === itemText ? `✓ ${itemText}` : itemText}
             </motion.div>
           ))}
           
           {unplacedItems.length === 0 && (
             <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="text-xs text-emerald-600 font-bold py-2"
             >
-              🎉 Semua item telah ditempatkan! Silakan periksa hasil Anda di bawah.
+              🎉 Semua item telah ditempatkan! Periksa hasil di bawah.
             </motion.p>
           )}
         </div>
