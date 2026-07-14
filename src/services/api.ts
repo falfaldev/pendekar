@@ -555,14 +555,14 @@ const MOCK_GAME_QUESTIONS: GameQuestion[] = [
     data: [
       {
         id: 'tg-1',
-        imageUrl: 'https://images.unsplash.com/photo-1579684389782-64d84b5e901a?auto=format&fit=crop&q=80&w=400',
+        imageUrl: 'https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=400',
         question: 'Apakah nama simbol pita merah yang sering melambangkan kepedulian HIV/AIDS ini?',
         options: ['Pita Merah (Red Ribbon)', 'Pita Kuning', 'Pita Kesehatan', 'Pita Persaudaraan'],
         answer: 'Pita Merah (Red Ribbon)'
       },
       {
         id: 'tg-2',
-        imageUrl: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&q=80&w=400',
+        imageUrl: 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=400',
         question: 'Metode tes laboratorium terpercaya ini dilakukan untuk mendeteksi antibodi HIV dalam tubuh. Apa namanya?',
         options: ['Tes Golongan Darah', 'Tes VCT / Antibodi HIV', 'Tes Urin Lengkap', 'Rontgen Dada'],
         answer: 'Tes VCT / Antibodi HIV'
@@ -570,16 +570,16 @@ const MOCK_GAME_QUESTIONS: GameQuestion[] = [
     ],
     levels: [
       { level: 1, data: [
-        { id: 'tg-l1-1', imageUrl: 'https://images.unsplash.com/photo-1579684389782-64d84b5e901a?auto=format&fit=crop&q=80&w=400', question: 'Apa nama simbol pita merah yang sering dipakai sebagai simbol dukungan HIV/AIDS?', options: ['Pita Merah (Red Ribbon)', 'Pita Kuning', 'Pita Kesehatan', 'Pita Persaudaraan'], answer: 'Pita Merah (Red Ribbon)' },
-        { id: 'tg-l1-2', imageUrl: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&q=80&w=400', question: 'Tes yang paling tepat untuk mendeteksi HIV adalah...', options: ['Tes VCT / Antibodi HIV', 'Tes Urin', 'Tes Mata', 'Tes Gula Darah'], answer: 'Tes VCT / Antibodi HIV' }
+        { id: 'tg-l1-1', imageUrl: 'https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa nama simbol pita merah yang sering dipakai sebagai simbol dukungan HIV/AIDS?', options: ['Pita Merah (Red Ribbon)', 'Pita Kuning', 'Pita Kesehatan', 'Pita Persaudaraan'], answer: 'Pita Merah (Red Ribbon)' },
+        { id: 'tg-l1-2', imageUrl: 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Tes yang paling tepat untuk mendeteksi HIV adalah...', options: ['Tes VCT / Antibodi HIV', 'Tes Urin', 'Tes Mata', 'Tes Gula Darah'], answer: 'Tes VCT / Antibodi HIV' }
       ] },
       { level: 2, data: [
-        { id: 'tg-l2-1', imageUrl: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=400', question: 'Apa yang biasanya dilakukan saat seseorang ingin mengetahui status HIV-nya?', options: ['Konsultasi dan Tes HIV', 'Membuang obat', 'Minum vitamin', 'Tidur lebih lama'], answer: 'Konsultasi dan Tes HIV' },
-        { id: 'tg-l2-2', imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=400', question: 'Apa peran ART pada pengobatan HIV?', options: ['Menghambat perkembangan virus', 'Membuat virus lebih cepat', 'Menghilangkan semua gejala', 'Menulari orang lain'], answer: 'Menghambat perkembangan virus' }
+        { id: 'tg-l2-1', imageUrl: 'https://images.pexels.com/photos/4173251/pexels-photo-4173251.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa yang biasanya dilakukan saat seseorang ingin mengetahui status HIV-nya?', options: ['Konsultasi dan Tes HIV', 'Membuang obat', 'Minum vitamin', 'Tidur lebih lama'], answer: 'Konsultasi dan Tes HIV' },
+        { id: 'tg-l2-2', imageUrl: 'https://images.pexels.com/photos/3825586/pexels-photo-3825586.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa peran ART pada pengobatan HIV?', options: ['Menghambat perkembangan virus', 'Membuat virus lebih cepat', 'Menghilangkan semua gejala', 'Menulari orang lain'], answer: 'Menghambat perkembangan virus' }
       ] },
       { level: 3, data: [
-        { id: 'tg-l3-1', imageUrl: 'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&q=80&w=400', question: 'Apa yang dimaksud dengan ODHIV?', options: ['Orang Dengan HIV', 'Organisasi Dokter HIV', 'Obat Diperlukan HIV', 'Orang Di Rumah Sakit'], answer: 'Orang Dengan HIV' },
-        { id: 'tg-l3-2', imageUrl: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&q=80&w=400', question: 'Apa manfaat tes HIV dini?', options: ['Penanganan cepat', 'Membuat HIV lebih parah', 'Menghilangkan kebutuhan ART', 'Mengurangi kebersihan'], answer: 'Penanganan cepat' }
+        { id: 'tg-l3-1', imageUrl: 'https://images.pexels.com/photos/5327584/pexels-photo-5327584.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa yang dimaksud dengan ODHIV?', options: ['Orang Dengan HIV', 'Organisasi Dokter HIV', 'Obat Diperlukan HIV', 'Orang Di Rumah Sakit'], answer: 'Orang Dengan HIV' },
+        { id: 'tg-l3-2', imageUrl: 'https://images.pexels.com/photos/3259624/pexels-photo-3259624.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa manfaat tes HIV dini?', options: ['Penanganan cepat', 'Membuat HIV lebih parah', 'Menghilangkan kebutuhan ART', 'Mengurangi kebersihan'], answer: 'Penanganan cepat' }
       ] }
     ]
   },

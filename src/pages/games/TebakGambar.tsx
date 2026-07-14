@@ -203,11 +203,27 @@ export default function TebakGambar() {
               src={currentQ.imageUrl}
               alt="Tebakan"
               className="w-full h-full object-cover"
+              crossOrigin="anonymous"
+              onError={(e) => {
+                // Fallback: coba ulang dengan format URL berbeda
+                const img = e.currentTarget;
+                if (!img.dataset.retried) {
+                  img.dataset.retried = 'true';
+                  // Tambahkan timestamp untuk bypass cache
+                  const url = currentQ.imageUrl.includes('?')
+                    ? currentQ.imageUrl + '&t=' + Date.now()
+                    : currentQ.imageUrl + '?t=' + Date.now();
+                  img.src = url;
+                } else {
+                  // Gunakan placeholder jika benar-benar gagal
+                  img.src = 'https://placehold.co/400x300/e0e7ff/4f46e5?text=Gambar+Edukasi';
+                }
+              }}
               onClick={() => setIsZoomed(true)}
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
               <span className="text-white font-bold text-xs flex items-center gap-2">
-                🔍 Klik untuk perbesar
+                🔍 Ketuk untuk perbesar
               </span>
             </div>
           </div>
