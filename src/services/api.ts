@@ -555,7 +555,7 @@ const MOCK_GAME_QUESTIONS: GameQuestion[] = [
     data: [
       {
         id: 'tg-1',
-        imageUrl: 'https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=400',
+        imageUrl: '/red_ribbon.png',
         question: 'Apakah nama simbol pita merah yang sering melambangkan kepedulian HIV/AIDS ini?',
         options: ['Pita Merah (Red Ribbon)', 'Pita Kuning', 'Pita Kesehatan', 'Pita Persaudaraan'],
         answer: 'Pita Merah (Red Ribbon)'
@@ -569,19 +569,20 @@ const MOCK_GAME_QUESTIONS: GameQuestion[] = [
       }
     ],
     levels: [
-      { level: 1, data: [
-        { id: 'tg-l1-1', imageUrl: 'https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa nama simbol pita merah yang sering dipakai sebagai simbol dukungan HIV/AIDS?', options: ['Pita Merah (Red Ribbon)', 'Pita Kuning', 'Pita Kesehatan', 'Pita Persaudaraan'], answer: 'Pita Merah (Red Ribbon)' },
-        { id: 'tg-l1-2', imageUrl: 'https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Tes yang paling tepat untuk mendeteksi HIV adalah...', options: ['Tes VCT / Antibodi HIV', 'Tes Urin', 'Tes Mata', 'Tes Gula Darah'], answer: 'Tes VCT / Antibodi HIV' }
-      ] },
-      { level: 2, data: [
-        { id: 'tg-l2-1', imageUrl: 'https://images.pexels.com/photos/4173251/pexels-photo-4173251.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa yang biasanya dilakukan saat seseorang ingin mengetahui status HIV-nya?', options: ['Konsultasi dan Tes HIV', 'Membuang obat', 'Minum vitamin', 'Tidur lebih lama'], answer: 'Konsultasi dan Tes HIV' },
-        { id: 'tg-l2-2', imageUrl: 'https://images.pexels.com/photos/3825586/pexels-photo-3825586.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa peran ART pada pengobatan HIV?', options: ['Menghambat perkembangan virus', 'Membuat virus lebih cepat', 'Menghilangkan semua gejala', 'Menulari orang lain'], answer: 'Menghambat perkembangan virus' }
-      ] },
-      { level: 3, data: [
-        { id: 'tg-l3-1', imageUrl: 'https://images.pexels.com/photos/5327584/pexels-photo-5327584.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa yang dimaksud dengan ODHIV?', options: ['Orang Dengan HIV', 'Organisasi Dokter HIV', 'Obat Diperlukan HIV', 'Orang Di Rumah Sakit'], answer: 'Orang Dengan HIV' },
-        { id: 'tg-l3-2', imageUrl: 'https://images.pexels.com/photos/3259624/pexels-photo-3259624.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa manfaat tes HIV dini?', options: ['Penanganan cepat', 'Membuat HIV lebih parah', 'Menghilangkan kebutuhan ART', 'Mengurangi kebersihan'], answer: 'Penanganan cepat' }
-      ] }
-    ]
+      {
+        level: 1,
+        data: [
+          { id: 'tg-l1-1', imageUrl: '/red_ribbon.png', question: 'Apa nama simbol pita merah yang sering dipakai sebagai simbol dukungan HIV/AIDS?', options: ['Pita Merah (Red Ribbon)', 'Pita Kuning', 'Pita Kesehatan', 'Pita Persaudaraan'], answer: 'Pita Merah (Red Ribbon)' }
+        ]
+      },
+      {
+        level: 3,
+        data: [
+          { id: 'tg-l3-1', imageUrl: 'https://images.pexels.com/photos/5327584/pexels-photo-5327584.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa yang dimaksud dengan ODHIV?', options: ['Orang Dengan HIV', 'Organisasi Dokter HIV', 'Obat Diperlukan HIV', 'Orang Di Rumah Sakit'], answer: 'Orang Dengan HIV' },
+          { id: 'tg-l3-2', imageUrl: 'https://images.pexels.com/photos/3259624/pexels-photo-3259624.jpeg?auto=compress&cs=tinysrgb&w=400', question: 'Apa manfaat tes HIV dini?', options: ['Penanganan cepat', 'Membuat HIV lebih parah', 'Menghilangkan kebutuhan ART', 'Mengurangi kebersihan'], answer: 'Penanganan cepat' }
+        ]
+      }
+    ],
   },
   {
     id: 'gq-5',
@@ -731,6 +732,25 @@ const getLeaderboardReward = (rank: number): number => {
 // ==========================================
 // 3. API SERVICE IMPLEMENTATION
 // ==========================================
+
+// Peta URL gambar yang rusak ke URL yang stabil
+const IMAGE_REPLACEMENTS: Record<string, string> = {
+  'https://images.unsplash.com/photo-1579684389782-64d84b5e901a': '/red_ribbon.png',
+  'https://images.pexels.com/photos/5452201': '/red_ribbon.png',
+};
+
+function fixImageUrl(url: string): string {
+  if (!url) return url;
+  // Cek apakah URL dimulai dengan salah satu key yang rusak
+  for (const [broken, fixed] of Object.entries(IMAGE_REPLACEMENTS)) {
+    if (url.startsWith(broken)) return fixed;
+  }
+  // Ganti semua URL Unsplash photo-1579684 (pita merah) ke gambar lokal
+  if (url.includes('photo-1579684389782')) return '/red_ribbon.png';
+  // Ganti semua URL pexels 5452201 (pita merah)
+  if (url.includes('5452201')) return '/red_ribbon.png';
+  return url;
+}
 
 export const api = {
   // ----------------------------------------
@@ -1356,7 +1376,15 @@ export const api = {
       const { data, error } = await supabase.from('game_soal').select('*').eq('game_id', gameId).maybeSingle();
       if (error || !data) return null;
       const questionEntry = data as GameQuestion;
-      return getGameQuestionData(questionEntry, level);
+      const result = getGameQuestionData(questionEntry, level);
+      // Fix gambar yang rusak — ganti URL yang expired dengan yang stabil
+      if (Array.isArray(result)) {
+        return result.map((q: any) => ({
+          ...q,
+          imageUrl: fixImageUrl(q.imageUrl)
+        }));
+      }
+      return result;
     } else {
       const questions = getLocal('pendekar_game_questions') as GameQuestion[];
       const found = questions.find(q => q.game_id === gameId);
