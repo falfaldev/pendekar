@@ -735,20 +735,24 @@ const getLeaderboardReward = (rank: number): number => {
 
 // Peta URL gambar yang rusak ke URL yang stabil
 const IMAGE_REPLACEMENTS: Record<string, string> = {
-  'https://images.unsplash.com/photo-1579684389782-64d84b5e901a': '/red_ribbon.png',
-  'https://images.pexels.com/photos/5452201': '/red_ribbon.png',
+  'https://images.unsplash.com/photo-1579684389782-64d84b5e901a': 'https://www.pendekaremaja.com/red_ribbon.png',
+  'https://images.pexels.com/photos/5452201': 'https://www.pendekaremaja.com/red_ribbon.png',
+  'https://pendekaremaja.com/red_ribbon.png': 'https://www.pendekaremaja.com/red_ribbon.png',
 };
 
 function fixImageUrl(url: string): string {
   if (!url) return url;
-  // Cek apakah URL dimulai dengan salah satu key yang rusak
+  // Cek peta URL rusak
   for (const [broken, fixed] of Object.entries(IMAGE_REPLACEMENTS)) {
     if (url.startsWith(broken)) return fixed;
   }
-  // Ganti semua URL Unsplash photo-1579684 (pita merah) ke gambar lokal
-  if (url.includes('photo-1579684389782')) return '/red_ribbon.png';
-  // Ganti semua URL pexels 5452201 (pita merah)
-  if (url.includes('5452201')) return '/red_ribbon.png';
+  // Ganti semua URL pita merah ke gambar lokal
+  if (url.includes('photo-1579684389782')) return 'https://www.pendekaremaja.com/red_ribbon.png';
+  if (url.includes('5452201')) return 'https://www.pendekaremaja.com/red_ribbon.png';
+  // Fix URL tanpa www ke www
+  if (url.startsWith('https://pendekaremaja.com/')) {
+    return url.replace('https://pendekaremaja.com/', 'https://www.pendekaremaja.com/');
+  }
   return url;
 }
 
