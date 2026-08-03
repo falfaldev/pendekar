@@ -115,7 +115,7 @@ export default function MateriList() {
           <p className="text-xs text-on-surface-variant mt-1">Coba gunakan kata kunci pencarian yang lain.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredMaterials.map((m) => {
             const isCompleted = completedMap[m.id];
             const catName = categories.find(c => c.id === m.kategori_id)?.nama || 'Umum';

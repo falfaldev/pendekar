@@ -71,26 +71,26 @@ export default function ManageUsers() {
           </h3>
         </div>
 
-        {/* Mobile card list */}
-        <div className="block sm:hidden divide-y divide-slate-200">
+        {/* Mobile card list — tampil di bawah 768px */}
+        <div className="block md:hidden divide-y divide-slate-200">
           {users.map((u) => (
             <div key={u.id} className="px-4 py-4 flex items-center gap-3">
               <img src={u.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}
                 alt={u.name} className="w-10 h-10 rounded-full border border-slate-200 object-cover shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm text-slate-800 truncate">{u.name}</p>
-                <div className="flex items-center gap-2 mt-0.5">
+                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                   <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'}`}>{u.role}</span>
-                  <span className="text-[10px] text-slate-500">Lvl {u.level} · {u.points} Pts</span>
+                  <span className="text-[10px] text-slate-500">Lvl {u.level} · {u.xp} XP · {u.points} Pts</span>
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
                 <button onClick={() => handleToggleRole(u.id, u.role)}
-                  className="p-2.5 border border-slate-200 rounded-xl text-slate-600 hover:border-red-500 hover:text-red-500 transition-colors bg-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                  className="p-2.5 border border-slate-200 rounded-xl text-slate-600 active:border-red-500 active:text-red-500 transition-colors bg-white min-w-[44px] min-h-[44px] flex items-center justify-center">
                   <ArrowLeftRight className="w-3.5 h-3.5" />
                 </button>
                 <button onClick={() => handleDelete(u.id)}
-                  className="p-2.5 border border-slate-200 rounded-xl text-slate-600 hover:border-red-600 hover:text-white hover:bg-red-600 transition-colors bg-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                  className="p-2.5 border border-slate-200 rounded-xl text-slate-600 active:border-red-600 active:text-white active:bg-red-600 transition-colors bg-white min-w-[44px] min-h-[44px] flex items-center justify-center">
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -98,8 +98,8 @@ export default function ManageUsers() {
           ))}
         </div>
 
-        {/* Desktop table */}
-        <div className="hidden sm:block overflow-x-auto">
+        {/* Desktop table — tampil di 768px ke atas */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
@@ -158,7 +158,7 @@ export default function ManageUsers() {
               ))}
             </tbody>
           </table>
-        </div>{/* end hidden sm:block */}
+        </div>{/* end hidden md:block */}
       </div>
     </div>
   );

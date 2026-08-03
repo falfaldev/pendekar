@@ -116,8 +116,8 @@ export default function Leaderboard() {
           </div>
         </div>
 
-        {/* Mobile: card list | Desktop: table */}
-        <div className="block sm:hidden divide-y divide-outline-variant/10">
+        {/* Mobile: card list — di bawah 768px */}
+        <div className="block md:hidden divide-y divide-outline-variant/10">
           {list.map((item, index) => {
             const rank = index + 1;
             const isCurrentUser = item.id === currentUser.id;
@@ -142,7 +142,8 @@ export default function Leaderboard() {
           })}
         </div>
 
-        <div className="hidden sm:block overflow-x-auto">
+        {/* Desktop table — 768px ke atas */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-outline-variant/10 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
