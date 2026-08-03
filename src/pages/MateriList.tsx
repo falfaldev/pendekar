@@ -60,7 +60,7 @@ export default function MateriList() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="font-headline-md text-2xl font-bold text-primary">Materi Edukasi</h1>
-          <p className="text-on-surface-variant text-sm mt-1">
+          <p className="text-on-surface-variant text-sm mt-1 line-clamp-2">
             Pelajari segala hal tentang HIV/AIDS untuk menghentikan stigma buruk di masyarakat.
           </p>
         </div>
@@ -123,7 +123,7 @@ export default function MateriList() {
               <div 
                 key={m.id}
                 onClick={() => navigate(`/materi/${m.slug}`)}
-                className="bg-white rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 flex flex-col hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer group"
+                className="bg-white rounded-3xl overflow-hidden shadow-sm border border-outline-variant/30 flex flex-col hover:shadow-md transition-all cursor-pointer group w-full"
               >
                 {/* Thumbnail Image */}
                 <div className="h-36 sm:h-48 overflow-hidden bg-slate-100 relative">

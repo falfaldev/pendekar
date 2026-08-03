@@ -178,7 +178,7 @@ export default function AdminLayout({ user, onLogout, children }: AdminLayoutPro
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -15 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1440px] mx-auto w-full"
+          className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1440px] mx-auto w-full overflow-hidden"
         >
           {children}
         </motion.main>
