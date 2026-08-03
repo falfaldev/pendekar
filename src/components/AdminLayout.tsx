@@ -135,7 +135,7 @@ export default function AdminLayout({ user, onLogout, children }: AdminLayoutPro
       </AnimatePresence>
 
       {/* Main Wrapper */}
-      <div className="flex-1 lg:pl-[280px] min-h-screen flex flex-col">
+      <div className="flex-1 lg:pl-[280px] min-h-screen flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
         <header className="h-20 bg-white/80 backdrop-blur-md sticky top-0 z-20 flex justify-between items-center px-4 md:px-8 border-b border-slate-200">
           <div className="flex items-center gap-3">

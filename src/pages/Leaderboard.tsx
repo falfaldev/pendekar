@@ -116,18 +116,18 @@ export default function Leaderboard() {
           </div>
         </div>
 
-        {/* Mobile: card list — di bawah 768px */}
-        <div className="block md:hidden divide-y divide-outline-variant/10">
+        {/* Mobile: card list — di bawah 1024px */}
+        <div className="block lg:hidden divide-y divide-outline-variant/10">
           {list.map((item, index) => {
             const rank = index + 1;
             const isCurrentUser = item.id === currentUser.id;
             const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
             return (
-              <div key={item.id} className={`flex items-center gap-3 px-4 py-3 ${isCurrentUser ? 'bg-primary/5' : ''}`}>
+              <div key={item.id} className={`flex items-center gap-3 px-4 py-3 min-w-0 ${isCurrentUser ? 'bg-primary/5' : ''}`}>
                 <span className="w-8 text-center font-bold text-sm text-slate-600 shrink-0">{medal}</span>
                 <img src={item.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}
                   alt={item.name} className="w-10 h-10 rounded-full object-cover border border-outline-variant/30 shrink-0" />
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 overflow-hidden">
                   <p className="font-bold text-sm text-slate-800 truncate">
                     {item.name} {isCurrentUser && <span className="text-[10px] font-normal text-primary">(Kamu)</span>}
                   </p>
@@ -142,8 +142,8 @@ export default function Leaderboard() {
           })}
         </div>
 
-        {/* Desktop table — 768px ke atas */}
-        <div className="hidden md:block overflow-x-auto">
+        {/* Desktop table — 1024px ke atas */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-outline-variant/10 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">

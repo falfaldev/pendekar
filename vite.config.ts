@@ -8,4 +8,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    host: true, // expose ke jaringan lokal agar bisa dibuka dari HP
+    port: 5173,
+  },
 })

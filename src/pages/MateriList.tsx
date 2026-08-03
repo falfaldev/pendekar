@@ -55,12 +55,12 @@ export default function MateriList() {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 w-full overflow-hidden">
       {/* Header and Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="font-headline-md text-2xl font-bold text-primary">Materi Edukasi</h1>
-          <p className="text-on-surface-variant text-sm mt-1 line-clamp-2">
+          <p className="text-on-surface-variant text-sm mt-1">
             Pelajari segala hal tentang HIV/AIDS untuk menghentikan stigma buruk di masyarakat.
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function MateriList() {
           <p className="text-xs text-on-surface-variant mt-1">Coba gunakan kata kunci pencarian yang lain.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
           {filteredMaterials.map((m) => {
             const isCompleted = completedMap[m.id];
             const catName = categories.find(c => c.id === m.kategori_id)?.nama || 'Umum';
